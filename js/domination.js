@@ -1,31 +1,14 @@
 ;(function($){
-	if (!window.requestAnimationFrame) {
-		return;
+	if (!window.requestAnimationFrame || !window.innerWidth || !window.pageYOffset) {
+		//return;
 	}
 
-	var NAMESPACE    = 'domination',
-		elements     = [],
-		$window      = $(window),
-		windowHeight = $window.height(),
-		windowTop    = $window.scrollTop(),
-		windowBottom,
-		activeElement,
-		newWindowTop,
-		newWindowHeight;
+	var NAMESPACE = 'domination',
+		elements = [],
+		activeElement;
 
 	(function animate() {
 		window.requestAnimationFrame(animate);
-
-		newWindowTop = $window.scrollTop();
-		newWindowHeight = $window.height();
-
-		if (newWindowHeight != windowHeight && newWindowTop != windowTop) {
-			return;
-		}
-
-		windowTop    = newWindowTop; 
-		windowHeight = newWindowHeight;
-		windowBottom = newWindowTop + newWindowHeight;
 
 		for (i in elements) {
 			elements[i].each(function(){
@@ -36,18 +19,18 @@
 
 	var helpers = {
 		bottom: function() {
-			return windowBottom;
+			return window.pageYOffset + window.innerHeight;
 		},
 		fromBottom: function() {
-			return windowBottom - activeElement.offset().top;
+			return window.pageYOffset + window.innerHeight - activeElement.offset().top;
 		},
 		height: function() {
-			return 
+			return window.innerHeight;
 		},
 		top: function() {
-			return windowTop;
-		},
-	}
+			return window.pageXOffset;
+		}
+	};
 
 	$.fn.domination = function(args){
 		activeElement = $(this);
@@ -58,13 +41,13 @@
 })(jQuery);
 
 $(function(){
-	var elems = $('.main section');
+	var elems = $('.main section:not(:eq(0))').filter(':not(:eq(0))');
 	elems.css('position', 'relative');
 
 	elems.domination(function(){
-		x = $(this).domination().fromBottom() / 400;
+		x = $(this).domination().fromBottom() / 250;
 		if (x <= 0 || x > 1.5) return;
-		y = Math.pow((x+.62), -2) * 75;
+		y = Math.pow((x+.99), -1.01) * 220;
 		$(this).css({ top: y, opacity: x+.3 });
 	});
 });
